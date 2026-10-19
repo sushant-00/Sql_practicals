@@ -1,0 +1,416 @@
+SET SERVEROUTPUT ON 
+
+DECLARE 
+FIF VARCHAR2(20);
+LIL VARCHAR2(20);
+SAL NUMBER(10);
+DEPT_ID NUMBER(10);
+
+
+
+
+BEGIN 
+
+SELECT FIRST_NAME , LAST_NAME   , SALARY , DEPARTMENT_ID  INTO FIF , LIL , SAL , DEPT_ID
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID = &DID;
+
+DBMS_OUTPUT.PUT_LINE(FIF|| LIL || SAL ||DEPT_ID);
+
+END;
+
+--2
+SET SERVEROUTPUT ON 
+DECLARE 
+
+F_NAME VARCHAR2(20);
+SAL NUMBER(10);
+
+BEGIN 
+DBMS_OUTPUT.PUT_LINE(&F_NAME || ' '|| &SAL);
+
+END ;
+
+--3
+
+DECLARE 
+X NUMBER(10) := 100;
+Y NUMBER(20);
+
+BEGIN 
+
+    DECLARE 
+          X NUMBER := 200;
+          Z NUMBER := 12;
+  
+           BEGIN 
+                 DBMS_OUTPUT.PUT_LINE(X);
+                 DBMS_OUTPUT.PUT_LINE(Z);
+  
+           END;
+
+ DBMS_OUTPUT.PUT_LINE(X);
+ DBMS_OUTPUT.PUT_LINE(Y);
+
+END ;
+
+
+--
+SET SERVEROUTPUT ON 
+DECLARE 
+FIRST1 VARCHAR2(20);
+LAST1 VARCHAR2(10);
+
+BEGIN 
+     DECLARE 
+          SALARY NUMBER(10);
+          BEGIN 
+             DBMS_OUTPUT.PUT_LINE(FIRST1);
+            END ;
+END;
+
+--
+SET SERVEROUTPUT ON
+BEGIN <<OUTER>>
+DECLARE 
+FATHER_NAME VARCHAR2(20) := 'RAVI';
+DATE_OF_BIRTH  DATE  := '02-1-1980';
+
+     BEGIN 
+	      DECLARE 
+		     SON_NAME VARCHAR(20) := 'RAJU';
+			 DATE_OF_BIRTH DATE := '20-02-2003';
+			 
+		    BEGIN 
+			    DBMS_OUTPUT.PUT_LINE('THIS IS FATHERS BIRTH_DATE :'|| OUTER.DATE_OF_BIRTH);
+				DBMS_OUTPUT.PUT_LINE('THIS IS CHILD DATE OF BIRTH :'||DATE_OF_BIRTH);
+			 
+	END ;
+END;	
+END;
+
+SELECT *
+FROM LOCATIONS;
+
+--
+DECLARE 
+
+F_NAME VARCHAR2(20);
+LAST_NAME VARCHAR2(10);
+SAL NUMBER(10);
+CITY VARCHAR2(20);
+DEPARTMENT_NAME VARCHAR2(20);
+
+
+BEGIN 
+     SELECT E.FIRST_NAME , E.LAST_NAME , E.SALARY  , S.CITY , D.DEPARTMENT_NAME  INTO  F_NAME , LAST_NAME , SAL , CITY , DEPARTMENT_NAME  
+	 FROM EMPLOYEES E  JOIN DEPARTMENTS D
+	 ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+	 JOIN LOCATIONS S 
+	 ON(D.LOCATION_ID = S.LOCATION_ID)
+	 WHERE E.DEPARTMENT_ID = 10;
+	 
+	 DBMS_OUTPUT.PUT_LINE (F_NAME ||' '|| LAST_NAME ||' '||  SAL ||' '|| CITY ||' '|| DEPARTMENT_NAME );
+	 
+END ;
+
+
+--
+
+SET SERVEROUTPUT ON 
+DECLARE
+F_NAME VARCHAR2(20);
+L_NAME VARCHAR2(20);
+SALARY NUMBER(10);
+
+BEGIN 
+
+SELECT FIRST_NAME , LAST_NAME , SALARY  INTO F_NAME , L_NAME , SALARY 
+FROM EMPLOYEES
+WHERE SALARY = (SELECT MAX(SALARY)
+FROM EMPLOYEES );
+
+DBMS_OUTPUT.PUT_LINE(F_NAME ||' '|| L_NAME||' '||SALARY);
+
+
+END ;
+
+
+-- AGGGRETATIONS 
+DECLARE 
+
+
+BEGIN
+
+
+
+END 
+SELECT 
+
+---
+SET SERVEROUTPUT ON 
+DECLARE 
+FIRST_NAME VARCHAR2(20);
+SAL NUMBER(10);
+NEW_COM NUMBER(10);
+
+BEGIN 
+    SELECT FIRST_NAME , SAL ,( CASE COMMISSION_PCT , WHEN  NULL THEN 0,
+	                             ELSE COMMISSION_PCT  END  AS NEW_COMM ) INTO (FIRST_NAME , SAL ,NEW_COM )
+	FROM EMPLOYEES
+	WHERE DEPARTMANT_ID = 10;
+	
+	DBMS_OUTPUT.PUT_LINE(FIRST_NAME || SAL || NEW_COM) ;
+	              
+
+END ;
+
+SET SERVEROUTPUT ON;
+
+DECLARE 
+    v_first_name  VARCHAR2(20);
+    v_sal         NUMBER(10);
+    v_new_com     NUMBER(10);
+BEGIN 
+
+    SELECT FIRST_NAME,
+           SALARY,
+           CASE 
+               WHEN COMMISSION_PCT IS NULL THEN 0
+               ELSE COMMISSION_PCT
+           END
+    INTO   v_first_name,
+           v_sal,
+           v_new_com
+    FROM EMPLOYEES
+    WHERE DEPARTMENT_ID = 10
+    AND ROWNUM = 1;  -- ensures single row
+
+    DBMS_OUTPUT.PUT_LINE(
+        v_first_name || ' ' || v_sal || ' ' || v_new_com
+    );
+
+END;
+/
+
+SET SERVEROUTPUT ON;
+
+DECLARE 
+    v_first_name  VARCHAR2(20);
+    v_sal         NUMBER(10);
+    v_new_com     NUMBER(10);
+BEGIN 
+
+    SELECT FIRST_NAME,
+           SALARY,
+           CASE 
+               WHEN COMMISSION_PCT IS NULL THEN 0
+               ELSE COMMISSION_PCT
+           END
+    INTO   v_first_name,
+           v_sal,
+           v_new_com
+    FROM EMPLOYEES
+    WHERE DEPARTMENT_ID = 10
+   
+
+    DBMS_OUTPUT.PUT_LINE(
+        v_first_name || ' ' || v_sal || ' ' || v_new_com
+    );
+
+END;
+
+
+SET SERVEROUTPUT ON;
+
+DECLARE 
+    v_first_name  VARCHAR2(20);
+    v_sal         NUMBER(10);
+    v_new_com     NUMBER(10);
+BEGIN 
+
+    SELECT FIRST_NAME,
+           SALARY,
+           CASE 
+               WHEN COMMISSION_PCT IS NULL THEN 0
+               ELSE COMMISSION_PCT
+           END
+    INTO   v_first_name,
+           v_sal,
+           v_new_com
+    FROM EMPLOYEES
+    WHERE DEPARTMENT_ID = 10
+   
+
+    DBMS_OUTPUT.PUT_LINE(
+        v_first_name || ' ' || v_sal || ' ' || v_new_com
+    );
+
+END;
+
+
+SET SERVEROUTPUT ON;
+
+DECLARE 
+    v_first_name  VARCHAR2(20);
+    v_sal         NUMBER(10);
+    v_new_com     NUMBER(10);
+BEGIN 
+
+    SELECT FIRST_NAME,
+           SALARY,
+           CASE 
+               WHEN COMMISSION_PCT IS NULL THEN 0
+               ELSE COMMISSION_PCT
+           END
+    INTO   v_first_name,
+           v_sal,
+           v_new_com
+    FROM EMPLOYEES
+    WHERE DEPARTMENT_ID = 10
+   
+
+    DBMS_OUTPUT.PUT_LINE(
+        v_first_name || ' ' || v_sal || ' ' || v_new_com
+    );
+
+END;
+
+SET SERVEROUTPUT ON;
+
+DECLARE 
+    v_first_name  VARCHAR2(20);
+    v_sal         NUMBER(10);
+    v_new_com     NUMBER(10);
+BEGIN 
+
+    SELECT FIRST_NAME,
+           SALARY,
+           CASE 
+               WHEN COMMISSION_PCT IS NULL THEN 0
+               ELSE COMMISSION_PCT
+           END
+    INTO   v_first_name,
+           v_sal,
+           v_new_com
+    FROM EMPLOYEES
+    WHERE DEPARTMENT_ID = 10;
+    --ROWNUM = 1;
+   
+
+    DBMS_OUTPUT.PUT_LINE(
+        v_first_name || ' ' || v_sal || ' ' || v_new_com
+    );
+
+END;
+
+
+SET SERVEROUTPUT ON 
+
+DECLARE 
+NO1 NUMBER(10) = &NUM;
+
+BEGIN 
+
+IF MOD(NO1 , 2) = 0
+    THEN 
+     DBMS_OUTPUT.PUT_LINE('NUMBER IS EVEN ');
+     
+END IF;
+END;
+
+
+SET SERVEROUTPUT ON 
+DECLARE 
+
+QUANTITY NUMBER(5) := 50;
+USERQT NUMBER(4) := &USER;
+
+
+BEGIN 
+          IF USERQT < QUANTITY 
+          THEN 
+             DBMS_OUTPUT.PUT_LINE('YOUR ORDER IS SUCCESSFULL ');
+         END IF;
+END ;
+     
+	 
+	 
+--
+SET SERVEROUTPUT ON 
+DECLARE 
+
+SYS_USER_NAME VARCHAR2 (20):= 'ABC';
+SYS_PASS VARCHAR2(20):= 'ABC123';
+
+USER_USER_NAME VARCHAR2(20) := &USER ;
+USER_USER_PASS VARCHAR2(20) := &PASS;
+
+BEGIN 
+IF USER_USER_NAME = SYS_USER_NAME AND  SYS_PASS = USER_USER_PASS 
+ THEN 
+   DBMS_OUTPUT.PUT_LINE('WELLCOME TO SYSTEM ');
+ELSE 
+ DBMS_OUTPUT.PUT_LINE('NOT MATCHED');
+END IF;
+
+END;
+
+
+     DECLARE 
+
+EMP_ID NUMBER(3) := &NUM;
+FIRST_NAME VARCHAR2(20) ;
+SALARY NUMBER(20);
+EXP_1 NUMBER(3);
+
+BEGIN
+SELECT EMPLOYEE_ID , FIRST_NAME , SALARY , ROUND(MONTHS_BETWEEN(SYSDATE , HIRE_DATE)) AS EXP_M  INTO EMP_ID , FIRST_NAME , SALARY, EXP_1
+FROM EMPLOYEES 
+WHERE EMPLOYEE_ID = EMP_ID;
+
+DBMS_OUTPUT.PUT_LINE(EMP_ID ||' '||  FIRST_NAME ||' '|| SALARY ||' '|| EXP_1);
+
+IF EXP_1 > 10
+  THEN 
+   DBMS_OUTPUT.PUT_LINE('SENIOR EMP ');
+   
+ELSE 
+   DBMS_OUTPUT.PUT_LINE('NOT SENOIR EMP ');
+
+END IF;
+
+END;
+
+
+--
+
+SET SERVEROUTPUT ON
+DECLARE 
+
+DID NUMBER := &DID_NUM;
+DEPT_NAME VARCHAR2(20);
+EMP_CNT NUMBER;
+
+
+BEGIN 
+
+SELECT D.DEPARTMENT_NAME , E.DEPARTMENT_ID , COUNT(EMPLOYEE_ID) AS EMP_CNT INTO  DEPT_NAME , DID , EMP_CNT 
+FROM EMPLOYEES E JOIN DEPARTMENTS D
+ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+GROUP BY D.DEPARTMENT_NAME ,E.DEPARTMENT_ID 
+HAVING E.DEPARTMENT_ID = DID;
+
+
+DBMS_OUTPUT.PUT_LINE(DEPT_NAME || DID||' ' || EMP_CNT );
+
+
+END;
+
+
+SELECT *
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID = 20 ;
+
+
+

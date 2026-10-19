@@ -1,0 +1,227 @@
+-- QUERY 1 -Write an SQL query to display employee_id and department_id of employees who:           -- 19-1-26
+--Work in department 10 OR department 20 AND have a salary greater than 5000
+--BUT are not managers.
+--  Employees in department 10 or 20
+SELECT employee_id, department_id
+FROM employees
+WHERE department_id = 10
+UNION
+SELECT employee_id, department_id
+FROM employees
+WHERE department_id = 20
+
+INTERSECT
+
+
+SELECT employee_id, department_id
+FROM employees
+WHERE salary > 5000
+
+MINUS
+
+SELECT employee_id, department_id
+FROM employees
+WHERE employee_id IN (SELECT DISTINCT manager_id 
+                      FROM employees 
+                      WHERE manager_id IS NOT NULL);
+
+--2)Display the department_id of departments,Having more than 5 employees, OR
+--Having total salary > 50000
+-- Departments with more than 5 employees
+SELECT department_id
+FROM employees
+GROUP BY department_id
+HAVING COUNT(employee_id) > 5
+
+UNION
+
+
+SELECT department_id
+FROM employees
+GROUP BY department_id
+HAVING SUM(salary) > 50000;
+
+--3)Find departments that have more than 5 employees AND total salary <50000.
+SELECT department_id
+FROM employees
+GROUP BY department_id
+HAVING COUNT(employee_id) > 5
+
+INTERSECT
+
+SELECT department_id
+FROM employees
+GROUP BY department_id
+HAVING SUM(salary) < 50000;
+
+--4)Find departments that have more than 5 employees and remove those who earn 50000?
+SELECT department_id
+FROM employees
+GROUP BY department_id
+HAVING COUNT(employee_id) > 5
+
+MINUS
+
+SELECT department_id
+FROM employees
+GROUP BY department_id
+HAVING SUM(salary) > 50000;
+
+-- 5) Select all country IDs available in the locations table
+SELECT country_id 
+FROM locations
+
+MINUS
+
+
+SELECT l.country_id
+FROM employees e
+JOIN departments d ON e.department_id = d.department_id
+JOIN locations l   ON d.location_id = l.location_id;
+
+
+
+--6)—-- DEPT AVERAGE SALARY ABOVE 8000 AND MAX SAL LESS THAN 4000
+SELECT DEPARTMENT_ID
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID
+HAVING AVG(SALARY) > 8000
+UNION
+SELECT DEPARTMENT_ID
+FROM EMPLOYEES
+GROUP BY DEPARTMENT_ID
+ HAVING MAX (SALARY) < 4000;
+
+--7)-- SELECT JOB_ID FROMS EMPLOEES WHO ARE MANAGERS IN JOBS TABLE
+SELECT JOB_ID FROM EMPLOYEES
+UNION
+SELECT JOB_ID FROM JOBS
+WHERE JOB_TITLE LIKE
+'%MANAGER%';
+
+--8 WAQD ALL UNIQUE COUNT OF EMPLOYEES JOB ID WISE 
+
+SELECT E.JOB_ID, COUNT(*) AS CNT
+FROM EMPLOYEES E JOIN JOBS J
+ON (E.JOB_ID = J.JOB_ID)
+GROUP BY E.JOB_ID
+UNION
+SELECT E.JOB_ID, COUNT(*) AS CNT
+FROM EMPLOYEES E JOIN JOBS J
+ON (E.JOB_ID = J.JOB_ID)
+GROUP BY E.JOB_ID
+HAVING COUNT(*) > 1;
+
+-- 9.  WAQD DISTINCT EMPLOYEES HIRED IN 2007
+
+SELECT EMPLOYEE_ID, CONCAT(FIRST_NAME, LAST_NAME) AS FULL_NAME, TO_CHAR(HIRE_DATE,'YYYY') AS NEW_YEAR
+FROM EMPLOYEES
+WHERE TO_CHAR(HIRE_DATE,'YYYY') = 2007
+INTERSECT
+SELECT EMPLOYEE_ID, CONCAT(FIRST_NAME, LAST_NAME) AS FULL_NAME, TO_CHAR(HIRE_DATE,'YYYY') AS NEW_YEAR
+FROM EMPLOYEES 
+WHERE TO_CHAR(HIRE_DATE,'YYYY') = 2007;
+
+-- 10. FETCH EMPLOYEES WHO WORK IN 50 OR SALES 80, BUT WHO NEVER HAD ANY JOB AND WHOSE EMAIL CONTAINS THE LETTER 'A'.
+(
+    SELECT EMPLOYEE_ID
+    FROM EMPLOYEES
+    WHERE DEPARTMENT_ID = 50
+    UNION ALL
+    SELECT EMPLOYEE_ID
+    FROM EMPLOYEES
+    WHERE DEPARTMENT_ID = 80
+)
+MINUS
+SELECT EMPLOYEE_ID
+FROM JOB_HISTORY
+INTERSECT
+SELECT EMPLOYEE_ID
+FROM EMPLOYEES
+WHERE EMAIL LIKE '%A%';
+
+-- 11. Employees earning more than 150,000 OR working as IT Programmer
+
+SELECT EMPLOYEE_ID 
+FROM EMPLOYEES
+WHERE (SALARY*12) > 150000
+UNION
+SELECT EMPLOYEE_ID 
+FROM EMPLOYEES
+WHERE JOB_ID = 'IT_PROG';
+
+-- 12. Employees earning more than 80,000 and having a manager
+
+SELECT EMPLOYEE_ID 
+FROM EMPLOYEES
+WHERE (SALARY*12) > 180000
+INTERSECT
+SELECT EMPLOYEE_ID 
+FROM EMPLOYEES
+WHERE MANAGER_ID IS NOT NULL; 
+
+--13.Show employees who either earn more than 15,000 or have been with the company for more than 20 years.
+
+SELECT FIRST_NAME, LAST_NAME, 'High Salary' AS Reason
+FROM EMPLOYEES WHERE SALARY > 15000
+UNION
+SELECT FIRST_NAME, LAST_NAME, 'Long Tenure'
+FROM EMPLOYEES WHERE HIRE_DATE < ADD_MONTHS(SYSDATE, -240);
+
+
+--14.Find cities that host departments with managers, excluding those that host departments without assigned managers
+SELECT L.CITY FROM LOCATIONS L JOIN DEPARTMENTS D USING(LOCATION_ID)
+WHERE D.MANAGER_ID IS NOT NULL
+MINUS
+SELECT L.CITY FROM LOCATIONS L JOIN DEPARTMENTS D USING(LOCATION_ID)
+WHERE D.MANAGER_ID IS NULL;
+
+--15.Find job titles that exist in both the United States and the United Kingdom.
+SELECT J.JOB_TITLE FROM JOBS J JOIN EMPLOYEES E USING(JOB_ID)
+JOIN DEPARTMENTS D USING(DEPARTMENT_ID) JOIN LOCATIONS L USING(LOCATION_ID)
+WHERE L.COUNTRY_ID = 'US'
+INTERSECT
+SELECT J.JOB_TITLE FROM JOBS J JOIN EMPLOYEES E USING(JOB_ID)
+JOIN DEPARTMENTS D USING(DEPARTMENT_ID) JOIN LOCATIONS L USING(LOCATION_ID)
+WHERE L.COUNTRY_ID = 'UK';
+
+--16Identify countries that have locations but do not have any departments named 'IT'.
+
+SELECT COUNTRY_NAME FROM COUNTRIES
+MINUS
+SELECT C.COUNTRY_NAME FROM COUNTRIES C JOIN LOCATIONS L USING(COUNTRY_ID)
+JOIN DEPARTMENTS D USING(LOCATION_ID) WHERE D.DEPARTMENT_NAME = 'IT';
+
+--17.Identify employees earning between 5k-10k who are NOT in the Sales department.
+SELECT FIRST_NAME, JOB_ID FROM EMPLOYEES WHERE SALARY BETWEEN 5000 AND 10000
+MINUS
+SELECT FIRST_NAME, JOB_ID FROM EMPLOYEES JOIN DEPARTMENTS USING(DEPARTMENT_ID)
+
+
+WHERE DEPARTMENT_NAME = 'Sales';
+
+--18 Employees with a 'Junior' salary rank but whose salary is higher than their department average.
+
+
+
+SELECT FIRST_NAME, SALARY FROM EMPLOYEES E
+WHERE SALARY < 5000 
+INTERSECT
+SELECT FIRST_NAME, SALARY FROM EMPLOYEES E
+WHERE SALARY > (SELECT AVG(SALARY) FROM EMPLOYEES WHERE DEPARTMENT_ID = E.DEPARTMENT_ID);
+
+--19 Find cities that host both a 'Shipping' and a 'Sales' department.
+SELECT CITY FROM LOCATIONS JOIN DEPARTMENTS USING(LOCATION_ID) WHERE DEPARTMENT_NAME = 'Shipping'
+INTERSECT
+SELECT CITY FROM LOCATIONS JOIN DEPARTMENTS USING(LOCATION_ID) WHERE DEPARTMENT_NAME = 'Sales';
+
+--20 Categorize regions by employee count using UNION.
+SELECT R.REGION_NAME, 'Busy' AS Status FROM REGIONS R JOIN COUNTRIES USING(REGION_ID)
+JOIN LOCATIONS USING(COUNTRY_ID) JOIN DEPARTMENTS USING(LOCATION_ID) JOIN EMPLOYEES USING(DEPARTMENT_ID)
+GROUP BY R.REGION_NAME HAVING COUNT(*) > 50
+UNION
+SELECT R.REGION_NAME, 'Quiet' FROM REGIONS R JOIN COUNTRIES USING(REGION_ID)
+JOIN LOCATIONS USING(COUNTRY_ID) JOIN DEPARTMENTS USING(LOCATION_ID) JOIN EMPLOYEES USING(DEPARTMENT_ID)
+GROUP BY R.REGION_NAME HAVING COUNT(*) <= 50;
+
+

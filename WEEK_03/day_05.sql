@@ -1,0 +1,229 @@
+2-- 16-1-26
+
+
+-- QUERY 1 : SELECT ALL EMPLOYEES WITH  THEIR RESPECTIVE DEPARTMENTS  AND ALSO ALONG WITH THEIR JOBS ??
+SELECT E.EMPLOYEE_ID, E.FIRST_NAME , D.DEPARTMENT_NAME ,
+J.JOB_TITLE
+FROM EMPLOYEES E RIGHT OUTER JOIN DEPARTMENTS D 
+ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+
+JOIN JOBS J 
+ON (E.JOB_ID = J.JOB_ID);
+
+
+-- QUERY 2: SELECT ALL EMPLOYEES AND THEIR CITYS WHERE THEY ARE WORKING ALONG WITH DEPARTMENT_ID??
+SELECT E.EMPLOYEE_ID , E.FIRST_NAME , D.DEPARTMENT_NAME , L.CITY
+FROM EMPLOYEES E LEFT OUTER JOIN DEPARTMENTS D 
+ON(E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+
+JOIN LOCATIONS L
+ON (D.LOCATION_ID = L.LOCATION_ID);
+
+-- QUERY 3:WRITE A QUERY TO DISPLAY NAMES AND COUNTRY ID AND COUNTRYS WHERE THEY WORK
+
+SELECT E.FIRST_NAME , E.LAST_NAME , C.COUNTRY_ID , DEPARTMENT_NAME
+FROM EMPLOYEES E LEFT OUTER JOIN DEPARTMENTS D
+ON(E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+
+JOIN LOCATIONS L
+ON (D.LOCATION_ID = L.LOCATION_ID)
+
+JOIN COUNTRIES C
+ON(L.COUNTRY_ID  = C.COUNTRY_ID);
+
+
+
+-- QUERY 4: .employee details along with their department details
+-- only for those employees whose manager is the same as the department manager 
+SELECT E.EMPLOYEE_ID ,E.FIRST_NAME,E.LAST_NAME , D.DEPARTMENT_ID ,D.DEPARTMENT_NAME ,D.MANAGER_ID
+FROM EMPLOYEES e JOIN DEPARTMENTS d 
+ON (e.DEPARTMENT_ID = D.DEPARTMENT_ID
+AND E.MANAGER_ID = D.MANAGER_ID);
+
+-- QUERY 5: WAQcity ,location,region,country ,region name ,where region name is asia
+SELECT l.CITY ,l.LOCATION_ID,r.REGION_ID ,c.COUNTRY_NAME ,r.REGION_NAME
+FROM LOCATIONS l JOIN COUNTRIES C
+ON (l.COUNTRY_ID = C.COUNTRY_ID)
+
+JOIN REGIONS r
+ON(C.REGION_ID=r.REGION_ID)
+WHERE r.REGION_NAME = 'Asia';
+
+-- QUERY 6:Write a SQL query to display employee details such as
+--employee_id, first_name, last_name, along with their department details
+--(department_id, department_name, manager_id and location details
+SELECT e.EMPLOYEE_ID ,e.FIRST_NAME,e.LAST_NAME , d.DEPARTMENT_ID ,d.DEPARTMENT_NAME ,d.MANAGER_ID,
+    l.CITY ,l.LOCATION_ID
+FROM EMPLOYEES e JOIN DEPARTMENTS d 
+ON (e.DEPARTMENT_ID = d.DEPARTMENT_ID)
+
+JOIN LOCATIONS l
+ON(d.LOCATION_ID = l.LOCATION_ID);
+
+
+
+
+-- QUERY 7:WAQD COUNTRIES WITH TOTAL SALARY EXPENSE ABOVE 10000??
+
+SELECT C.COUNTRY_NAME, SUM(E.SALARY) AS TOTAL_SALARY
+FROM EMPLOYEES E JOIN DEPARTMENTS D
+ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+
+JOIN LOCATIONS L
+ON (D.LOCATION_ID = L.LOCATION_ID)
+
+JOIN COUNTRIES C
+ON (L.COUNTRY_ID = C.COUNTRY_ID)
+GROUP BY C.COUNTRY_NAME
+HAVING SUM(E.SALARY) > 10000;
+
+--QUERY 8: WAQD DETAILS OF THOSE EMPLOYEES WHO ARE NOT MANAGERS AND SALARY IS LESS THAN 9000.
+
+SELECT E.EMPLOYEE_ID, E.FIRST_NAME, E.SALARY, J.JOB_TITLE, D.DEPARTMENT_NAME
+FROM EMPLOYEES E JOIN JOBS J
+ON (E.JOB_ID = J.JOB_ID)
+
+JOIN DEPARTMENTS D
+ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+
+WHERE J.JOB_TITLE NOT LIKE '%Manager%'
+AND E.SALARY < 9000;
+
+-- QUERY 9:  WAQD DETAILS OF THOSE EMPLOYEES WHO ARE WORKING IN IT OR SALES or finance .
+
+SELECT E.EMPLOYEE_ID, E.FIRST_NAME, D.DEPARTMENT_NAME, J.JOB_TITLE
+FROM EMPLOYEES E JOIN DEPARTMENTS D
+ON (E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+
+JOIN JOBS J
+ON (E.JOB_ID = J.JOB_ID)
+WHERE D.DEPARTMENT_NAME IN ('IT', 'Sales' , 'finance');
+
+-- query 10:  11)--WAQD EMPLOYEE DETAILS WHO ARE WORKING IN US COUNTRY??
+
+SELECT E.EMPLOYEE_ID, E.FIRST_NAME, D.DEPARTMENT_ID, D.DEPARTMENT_NAME, D.LOCATION_ID, 
+        L.CITY, C.COUNTRY_NAME, L.COUNTRY_ID, J.JOB_TITLE
+FROM EMPLOYEES E JOIN DEPARTMENTS D
+ON(E.DEPARTMENT_ID = D.DEPARTMENT_ID)
+
+JOIN LOCATIONS L
+ON(D.LOCATION_ID = L.LOCATION_ID)
+
+JOIN COUNTRIES C
+ON(L.COUNTRY_ID = C.COUNTRY_ID)
+
+JOIN JOBS J
+ON(E.JOB_ID = J.JOB_ID)
+WHERE C.COUNTRY_ID = 'BR';
+
+-- QUERY 11:WAQTD EMPLOYEES DETAILS WHO IS Administration Vice President   AND IN IT
+SELECT E.FIRST_NAME,
+       E.LAST_NAME,
+       E.MANAGER_ID,
+       L.CITY,
+       E.SALARY,
+       J.JOB_ID,
+       J.JOB_TITLE
+FROM EMPLOYEES E
+LEFT JOIN DEPARTMENTS D
+  ON E.EMPLOYEE_ID = D.MANAGER_ID
+LEFT JOIN LOCATIONS L
+  ON D.LOCATION_ID = L.LOCATION_ID
+JOIN JOBS J
+  ON E.JOB_ID = J.JOB_ID
+WHERE J.JOB_TITLE IN ('Administration Vice President', 'Programmer');
+
+-- QUERY 12: --WAQTD STOCK MANAGER DETAILS??
+SELECT E.FIRST_NAME , E. LAST_NAME, E.MANAGER_ID ,L.CITY, E.SALARY, J.JOB_ID, J.JOB_TITLE
+FROM EMPLOYEES E JOIN DEPARTMENTS D
+ON E.EMPLOYEE_ID  =  D.MANAGER_ID
+
+JOIN LOCATIONS L 
+ON D.LOCATION_ID = L.LOCATION_ID
+JOIN JOBS J
+ON E.JOB_ID  = J.JOB_ID
+WHERE JOB_TITLE  = 'Stock Manager';
+
+-- QUERY 13:)--WAQTD EMPLOYEES DETAILS WHO  IS MANAGER AND THIRE COUNTRY IS US??
+SELECT E.FIRST_NAME , E. LAST_NAME, E.MANAGER_ID , L.COUNTRY_ID
+FROM EMPLOYEES E JOIN DEPARTMENTS D
+ON E.EMPLOYEE_ID  =  D.MANAGER_ID
+
+JOIN LOCATIONS L
+ON D.LOCATION_ID = L.LOCATION_ID
+WHERE L.COUNTRY_ID = 'US';
+
+-- QUERY 14:  WAQDT THE  WAQTD EMPLOYEES DETAILS  WHO  LIVES INfO TORONTO??
+-- 
+SELECT E.FIRST_NAME, E.LAST_NAME , E.EMPLOYEE_ID,L.CITY
+FROM EMPLOYEES E JOIN DEPARTMENTS D
+ON E.EMPLOYEE_ID = D.MANAGER_ID
+JOIN  LOCATIONS L
+ON D.LOCATION_ID = L.LOCATION_ID
+WHERE L.CITY = 'Toronto';
+
+-- QUERY 15:Calculate the total salary and average commission for every Region, but only for regions with more than 5 employeeS  
+
+SELECT R.REGION_NAME, 
+       SUM(E.SALARY) AS TOTAL_PAYROLL, 
+       ROUND(AVG(NVL(E.COMMISSION_PCT, 0)), 2) AS AVG_COMM
+FROM REGIONS R
+JOIN COUNTRIES C ON (R.REGION_ID = C.REGION_ID)
+JOIN LOCATIONS L ON (C.COUNTRY_ID = L.COUNTRY_ID)
+JOIN DEPARTMENTS D ON (L.LOCATION_ID = D.LOCATION_ID)
+JOIN EMPLOYEES E ON (D.DEPARTMENT_ID = E.DEPARTMENT_ID)
+GROUP BY R.REGION_NAME
+HAVING COUNT(E.EMPLOYEE_ID) > 5
+ORDER BY TOTAL_PAYROLL DESC;
+
+-- QUERY 16: Sow the number of employees in each country and their average tenure in years.
+SELECT c.country_name, 
+       COUNT(e.employee_id) AS staff_count,
+       ROUND(AVG(MONTHS_BETWEEN(SYSDATE, e.hire_date)/12), 1) AS avg_years_tenure
+FROM employees e
+JOIN departments d ON (e.department_id = d.department_id)
+JOIN locations l ON (d.location_id = l.location_id)
+JOIN countries c ON (l.country_id = c.country_id)
+GROUP BY c.country_name
+ORDER BY staff_count DESC;
+
+-- QUERY 17: List every country and city, and show the count of departments, even if the count is zero.
+
+SELECT r.region_name, c.country_name, l.city, 
+       COUNT(d.department_id) AS dept_count
+FROM regions r
+JOIN countries c ON (r.region_id = c.region_id)
+JOIN locations l ON (c.country_id = l.country_id)
+LEFT JOIN departments d ON (l.location_id = d.location_id)
+GROUP BY r.region_name, c.country_name, l.city
+ORDER BY r.region_name, dept_count DESC;
+
+-- QUERY 18:how the highest salary available in each department, grouped by the country
+
+SELECT co.country_name, d.department_name, MAX(j.max_salary) AS possible_high
+FROM jobs j
+JOIN employees e ON (j.job_id = e.job_id)
+JOIN departments d ON (e.department_id = d.department_id)
+JOIN locations l ON (d.location_id = l.location_id)
+JOIN countries co ON (l.country_id = co.country_id)
+GROUP BY co.country_name, d.department_name
+HAVING MAX(j.max_salary) > 10000
+ORDER BY country_name;
+
+-- QUERY 19:  Find which Region has the highest diversity of Job Titles.
+
+SELECT r.region_name, COUNT(DISTINCT j.job_id) AS unique_job_count
+FROM regions r
+JOIN countries c ON (r.region_id = c.region_id)
+JOIN locations l ON (c.country_id = l.country_id)
+JOIN departments d ON (l.location_id = d.location_id)
+JOIN employees e ON (d.department_id = e.department_id)
+JOIN jobs j ON (e.job_id = j.job_id)
+GROUP BY r.region_name
+ORDER BY unique_job_count DESC;
+
+-- QUERY 20 : DIPLAY REGION TO COUNTRY TO OFFICE CITY??
+SELECT r.region_name, c.country_name, l.city
+FROM regions r
+JOIN countries c ON (r.region_id = c.region_id)
+JOIN locations l ON (c.country_id = l.country_id);
